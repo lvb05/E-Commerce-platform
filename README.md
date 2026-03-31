@@ -19,20 +19,21 @@ A production-ready e-commerce backend built with **Spring Boot 3**, featuring a 
 ---
 
 ## Architecture
-```
-Client
-  │
-  ▼
-JWT Filter (auth + RBAC)
-  │
-  ├── /api/auth      → AuthController      → AuthService
-  ├── /api/products  → ProductController   → ProductService  → Redis Cache
-  ├── /api/inventory → InventoryController → InventoryService
-  └── /api/orders    → OrderController     → OrderService    → @Transactional
-                                                              → Async Webhooks
-                                                     │
-                                               PostgreSQL
-```
+<img width="1090" height="624" alt="image" src="https://github.com/user-attachments/assets/b2811c62-e589-4fbb-8148-864e416af29d" />
+
+---
+## Features
+
+- **Stateless REST API** — no server-side sessions, JWT on every request
+- **JWT-based RBAC** — `ADMIN` and `CUSTOMER` roles with `@PreAuthorize` scoping
+- **Idempotent order creation** — `Idempotency-Key` header prevents duplicate orders on retry
+- **PostgreSQL transactions** — `@Transactional` ensures stock reservation and order creation are atomic
+- **Redis caching** — product catalog cached with 5-minute TTL, evicted on update
+- **Async webhooks** — order state changes trigger non-blocking HTTP callbacks via `@Async`
+- **OpenAPI docs** — Swagger UI available at `/swagger-ui.html`
+- **Docker Compose** — one command spins up app + postgres + redis
+
+---
 
 ## Project Structure
 ```
@@ -50,18 +51,6 @@ src/main/java/com/ecommerce/orderservice/
 └── service/         # AuthService, ProductService, InventoryService, OrderService, WebhookService
 ```
 
----
-
-## Features
-
-- **Stateless REST API** — no server-side sessions, JWT on every request
-- **JWT-based RBAC** — `ADMIN` and `CUSTOMER` roles with `@PreAuthorize` scoping
-- **Idempotent order creation** — `Idempotency-Key` header prevents duplicate orders on retry
-- **PostgreSQL transactions** — `@Transactional` ensures stock reservation and order creation are atomic
-- **Redis caching** — product catalog cached with 5-minute TTL, evicted on update
-- **Async webhooks** — order state changes trigger non-blocking HTTP callbacks via `@Async`
-- **OpenAPI docs** — Swagger UI available at `/swagger-ui.html`
-- **Docker Compose** — one command spins up app + postgres + redis
 
 ---
 
